@@ -4,6 +4,7 @@
 # A simple daemon that listens and responds on a port.
 
 import socket
+import threading
 
 HOST = '0.0.0.0'    # Listen on all interfaces
 PORT = 6669          # TODO: Change this with a command line argument or a config file
@@ -17,23 +18,31 @@ def main():
 
     # Listen
     daemon_socket.listen(1)
-    print("Py-Daemon is listening on port {PORT}...")
 
     # Loop forever (TODO: accept multiple clients at once with a threaded version)
     while True:
-        # Accept a connection
-        client_socket, client_address = daemon_socket.accept()
-        print("Connected by {client_address}")
+        # Accept connections
+        conn, address = daemon_socket.accept()
 
-        # Send a message
-        client_socket.sendall(b"Hello, world.\n")
-        client_socket.sendall(b"I am Brendan's daemon.\n")
-        client_socket.sendall(b"I have come to learn about you.\n")
-
-        # TODO: Ask for a message and receive it
+        # Start handle_client as a thread with each user so we can handle multiple connections
+        client_thread -threading(Thread(target=handle_client, args =(conn, addr)))
+        client_thread.start()
 
         # Close the Connection
         client_socket.close()
 
 
-main()
+def handle_client(conn, addr):
+    print(f"[+] New connection from {addr}")
+        try:
+            # Send a message (TODO: Get a response)
+            client_socket.sendall(b"Hello, world.\n")
+            client_socket.sendall(b"I am Brendan's daemon.\n")
+            client_socket.sendall(b"I have come to learn about you.\n")
+        finally:
+            conn.close()
+
+
+
+if __name__ == "__main__":
+    main()
