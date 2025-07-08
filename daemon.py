@@ -20,27 +20,30 @@ def main():
     daemon_socket.listen(1)
 
     # Loop forever (TODO: accept multiple clients at once with a threaded version)
-    while True:
-        # Accept connections
-        conn, address = daemon_socket.accept()
+    try:
+        while True:
+            # Accept connections
+            conn, address = daemon_socket.accept()
 
-        # Start handle_client as a thread with each user so we can handle multiple connections
-        client_thread -threading(Thread(target=handle_client, args =(conn, addr)))
-        client_thread.start()
-
-        # Close the Connection
-        client_socket.close()
+            # Start handle_client as a thread with each user so we can handle multiple connections
+            client_thread = threading.Thread(target=handle_client, args =(conn, address))
+            client_thread.start()
+    except KeyboardInterrupt:
+        print("Server closed by user.")
+    # Close the Connection
+    finally:
+        daemon_socket.close()
 
 
 def handle_client(conn, addr):
     print(f"[+] New connection from {addr}")
-        try:
-            # Send a message (TODO: Get a response)
-            client_socket.sendall(b"Hello, world.\n")
-            client_socket.sendall(b"I am Brendan's daemon.\n")
-            client_socket.sendall(b"I have come to learn about you.\n")
-        finally:
-            conn.close()
+    try:
+        # Send a message (TODO: Get a response)
+        conn.sendall(b"Hello, world.\n")
+        conn.sendall(b"I am Brendan's daemon.\n")
+        conn.sendall(b"I have come to learn about you.\n")
+    finally:
+        conn.close()
 
 
 
